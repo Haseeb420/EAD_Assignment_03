@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+* {
+    padding: 0px;
+    margin: 0px;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f1f1f1;
+    font-family: 'Poppins', sans-serif;
+}
+
+
+/* admin header styling starts from here */
+
+header nav {
+    background-color: rgb(40, 44, 52);
+    ;
+}
+
+header nav .navbar {
+    list-style: none;
+    padding: 5px;
+}
+
+header nav .navbar .nav-items {
+    display: inline-block;
+    margin: 5px 10px;
+}
+
+header nav .navbar .nav-items .nav-links {
+    color: #fff;
+    text-decoration: none;
+}
+
+
+/* admin header styling ends  here */
+
+
+/* admin home/welcome page styling start from here*/
+
+#adminHome h1 {
+    width: 80%;
+    margin: 10px auto;
+    font-size: 3rem;
+}
+
+
+/* admin home/welcome page styling ends here */
+
+
+/* admin user management page styling starts here */
+
+#userManagement {
+    width: 75%;
+    margin: 10px auto;
+    display: flex;
+}
+
+#addNewUser {
+    background-color: #fff;
+    width: 30%;
+}
+
+#userGrid {
+    width: 40%;
+    /* background-color: aqua; */
+    margin: 10px auto;
+    padding: 10px;
+}
+
+#userGrid table {
+    /* border:1px solid #000000a6; */
+    background-color: #fff;
+    border-collapse: collapse;
+}
+
+#userGrid table th,
+td {
+    font-size: 18px;
+    border: 1px solid #000000a6;
+    color: rgb(40, 44, 52);
+    text-align: center;
+    margin: 10px auto;
+    padding: 10px;
+}
+
+.btn {
+    text-align: center;
+    font-size: 16px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: 1px solid #fff;
+    color: white;
+}
+
+.newUserError {
+    text-align: center;
+    width: 100%;
+    position: absolute;
+    right: -270px;
+    top: 40px;
+    color: red;
+}
+
+
+/* admin user management page styling ends here */

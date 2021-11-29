@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin-Home</title>
+    <link rel="stylesheet" href="../css/LoginPage.css" />
+    <link rel="stylesheet" href="../css/AdminPage.css" />
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li class="nav-items">
+                    <a href="index.html" class="nav-links">Home</a>
+                </li>
+                <li class="nav-items">
+                    <a href="userManagement.html" class="nav-links">User Management</a>
+                </li>
+                <li class="nav-items">
+                    <a href="roleManage.html" class="nav-links">Role Management</a>
+                </li>
+                <li class="nav-items">
+                    <a href="permissionManagement.html" class="nav-links">Permission Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="rolePermissionsManagement.html" class="nav-links"
+              >Role-Permissions Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="userRoleManagement.html" class="nav-links"
+              >User-Role Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="../index.html" class="nav-links">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <br />
+    <main id="userManagement">
+        <section id="addNewUser">
+            <div class="loginHeader">
+                <h3>Role-Permission Management</h3>
+            </div>
+            <div class="inputFields">
+                
+                <div class="formControl">
+                    <label>Role : </label>
+                    <select name="role" id="role">
+              <option value="">---Select role---</option>
+            </select>
+                    <span class="newUserError roleError"></span>
+                </div>
+                <div class="formControl">
+                    <label>Permission : </label>
+                    <select name="permission" id="permission">
+              <option value="">---Select permission---</option>
+            </select>
+                    <span class="newUserError permissionError"></span>
+                </div>
+
+                <div class="loginFooter">
+                    <button type="submit" id="newUser">Save</button>
+                </div>
+            </div>
+        </section>
+        <section id="userGrid">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Role</th>
+                        <th>Permission</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTabble"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../js/jquery-3.6.0.slim.min.js"></script>
+    <script src="../js/SecurityManager.js"></script>
+    <!-- <script src="../js/myScript.js"></script> -->
+
+    <script>
+        $("document").ready(() => {
+            // to set countries and cities
+
+            $(".newUserError").hide();
+
+            var roles = SecurityManager.GetAllRoles();
+            var permissions = SecurityManager.GetAllPermissions();
+
+            for (var r in roles) {
+                $("#role").append(
+                    `<option value=${roles[r].roleName}>${roles[r].roleName}</option>`
+                );
+            }
+            for (var p in permissions) {
+            $("#permission").append(
+                        `<option value=${permissions[p].permissionName}>${permissions[p].permissionName}</option>`
+                    );
+                }
+           
+
+            function newRolePermissionError() {
+                alert("user not entered");
+            }
+
+            function DeleteRolePermissionError() {
+                alert("user note deleted");
+            }
+
+            function DeleteUserByID(rpID) {
+                let reponse = window.confirm("Are you sure you want delete user");
+                if (reponse) {
+                    SecurityManager.DeleteRolePermission(rpID, addNewRolePermissionRow, DeleteRolePermissionError);
+                }
+                return;
+            }
+            // DeleteUserByID(1);
+
+
+            function addNewRolePermissionRow() {
+                $("#usersTabble").html("");
+                var allRolePermissions = SecurityManager.GetAllRolePermissions();
+                // console.log(allrRolePermissions);
+                console.log(`array length${allRolePermissions.length}`);
+                var newRowStr = "";
+                for (let i = 0; i < allRolePermissions.length; i++) {
+                    // console.log(allrRolePermissions[i].name);
+                    newRowStr = `<tr><td>${allRolePermissions[i].rpID}</td><td>${allRolePermissions[i].roleName}</td><td>${allRolePermissions[i].permissionName}</td>
+                        <td>Edit</td><td><button class="btn btn-danger" id="btn-${allRolePermissions[i].rpID}">Delete</button></td></tr>`;
+                    $("#usersTabble").append(newRowStr);
+                    // document.getElementById(`btn-${allrRolePermissions[i].rpID}`).addEventListener("click", DeleteUserByID(allrRolePermissions[i].rpID));
+                    document.getElementById(`btn-${allRolePermissions[i].rpID}`).addEventListener("click", () => {
+                        DeleteUserByID(allRolePermissions[i].rpID);
+                    });
+                }
+            }
+
+            addNewRolePermissionRow();
+            // userManangement Form submission done here\
+
+            $("#login,#password,#name,#email,#role,#permission").focus(() => {
+                $(".newRolePermissionError").hide();
+            });
+            $("#newUser").click(() => {
+                let role = $("#role").val();
+                let permission = $("#permission").val();
+              
+                if (role.length == 0) {
+                    $(".roleError").show();
+                    $(".roleError").text("role can't be empty");
+                    return;
+                }
+
+                if (permission.length == 0) {
+                    $(".permissionError").show();
+                    $(".permissionError").text("permission can't be empty");
+                    return;
+                }
+                var id = SecurityManager.GetAllRolePermissions().length + 1;
+                console.log(id);
+                var rpObj = {
+                    rpID: id,
+                    roleName: role,
+                    permissionName: permission,
+                };
+                console.log(rpObj);
+
+                SecurityManager.SaveRolePermission(rpObj, addNewRolePermissionRow, newRolePermissionError);
+            });
+        });
+    </script>
+</body>
+
+</html>

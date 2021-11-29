@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BITF18A018-Assignment_02</title>
+    <link rel="stylesheet" href="./css/LoginPage.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="brandTitle">Security Manager</h1>
+    </header>
+    <main class="content">
+      <section class="loginbox">
+        <div class="loginHeader">
+          <h3>Login Admin</h3>
+        </div>
+        <div class="inputFields">
+          <span id="adminErrorMessage">Username or Password not Correct!</span>
+
+          <div class="formControl">
+            <label>User Name</label>
+            <input
+              type="text"
+              name="username"
+              id="username"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="formControl">
+            <label>Password</label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="loginFooter">
+            <button type="submit" id="adminLoginBtn">Login</button>
+          </div>
+        </div>
+      </section>
+      <section class="loginbox">
+        <div class="loginHeader">
+          <h3>Login User</h3>
+        </div>
+        <span class="errorMessage" id="userErrorMessage">Username or Password not Correct!</span>
+
+        <div class="inputFields">
+          <span class="errorMessage" id="userErrorMessage"></span>
+          <div class="formControl">
+            <label>User Name</label>
+            <input
+              type="text"
+              name="userLogin"
+              id="userLogin"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="formControl">
+            <label>Password</label>
+            <input
+              type="password"
+              name="userPassword"
+              id="userPassword"
+              required
+              autocomplete="off"
+            />
+          </div>
+          <div class="loginFooter">
+            <button id="userBtn" type="submit">Login</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./js/jquery-3.6.0.slim.min.js"></script>
+    <script src="./js/SecurityManager.js"></script>
+    <!-- <script src="./js/myScript.js"></script> -->
+    <script>
+      $("document").ready(() => {
+        $("#adminErrorMessage").hide();
+        $("#userErrorMessage").hide();
+
+        //admin login function done here
+        $("#adminLoginBtn").click(() => {
+          if (
+            SecurityManager.ValidateAdmin(
+              $("#username").val(),
+              $("#password").val()
+            )
+          ) {
+            window.location.href = "Admin/index.html";
+          } else {
+            $("#adminErrorMessage").show();
+          }
+        });
+
+        // to hide error message 
+        $("#username,#password").focus(() => {
+          $("#adminErrorMessage").hide();
+        });
+
+        // user login done here
+        $("#userBtn").click(()=>{
+          let userName=$("#userLogin").val();
+          let userPassword=$("#userPassword").val();
+          let allUsers=SecurityManager.GetAllUsers();
+          for(let i=0;i<allUsers.length;i++){
+            if(allUsers[i].login===userName&&allUsers[i].password){
+              let userstr=JSON.stringify(allUsers[i]);
+              document.cookie = `userName=${allUsers[i].name}`;
+              window.location.href=`User/index.html`;
+            }
+            else{
+              $("#userErrorMessage").show();
+            }
+          }
+
+        });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin-Home</title>
+    <link rel="stylesheet" href="../css/LoginPage.css" />
+    <link rel="stylesheet" href="../css/AdminPage.css" />
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li class="nav-items">
+                    <a href="index.html" class="nav-links">Home</a>
+                </li>
+                <li class="nav-items">
+                    <a href="userManagement.html" class="nav-links">User Management</a>
+                </li>
+                <li class="nav-items">
+                    <a href="roleManage.html" class="nav-links">Role Management</a>
+                </li>
+                <li class="nav-items">
+                    <a href="permissionManagement.html" class="nav-links">Permission Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="rolePermissionsManagement.html" class="nav-links"
+              >Role-Permissions Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="userRoleManagement.html" class="nav-links"
+              >User-Role Management</a
+            >
+          </li>
+          <li class="nav-items">
+            <a href="../index.html" class="nav-links">Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <br />
+    <main id="userManagement">
+        <section id="addNewUser">
+            <div class="loginHeader">
+                <h3>User Management</h3>
+            </div>
+            <div class="inputFields">
+                <div class="formControl">
+                    <label>Login : </label>
+                    <input type="text" name="login" id="login" required autocomplete="off" />
+                    <span class="newUserError loginError"></span>
+                </div>
+                <div class="formControl">
+                    <label>Password : </label>
+                    <input type="password" name="password" id="password" required autocomplete="off" />
+                    <span class="newUserError passwordError"></span>
+                </div>
+                <div class="formControl">
+                    <label>Name : </label>
+                    <input type="text" name="name" id="name" required autocomplete="off" />
+                    <span class="newUserError nameError"></span>
+                </div>
+                <div class="formControl">
+                    <label>Email : </label>
+                    <input type="email" name="email" id="email" required autocomplete="off" />
+                    <span class="newUserError emailError"></span>
+                </div>
+                <div class="formControl">
+                    <label>Country : </label>
+                    <select name="country" id="country">
+              <option value="">---Select Country---</option>
+            </select>
+                    <span class="newUserError countryError"></span>
+                </div>
+                <div class="formControl">
+                    <label>City : </label>
+                    <select name="city" id="city"></select>
+                    <span class="newUserError cityError"></span>
+                </div>
+
+                <div class="loginFooter">
+                    <button type="submit" id="newUser">Save</button>
+                </div>
+            </div>
+        </section>
+        <section id="userGrid">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTabble"></tbody>
+            </table>
+        </section>
+    </main>
+
+    <script src="../js/jquery-3.6.0.slim.min.js"></script>
+    <script src="../js/SecurityManager.js"></script>
+    <!-- <script src="../js/myScript.js"></script> -->
+
+    <script>
+        $("document").ready(() => {
+            // to set countries and cities
+
+            $(".newUserError").hide();
+
+            var countries = SecurityManager.GetCountries();
+
+            for (var c in countries) {
+                $("#country").append(
+                    `<option value=${countries[c].CountryID}>${countries[c].Name}</option>`
+                );
+            }
+
+            $("#country").change(() => {
+                // alert("#country").val();
+                var cities = SecurityManager.GetCitiesByCountryId(
+                    $("#country").val()
+                );
+                console.log(cities);
+                $("#city").html("<select></select>");
+                for (var c in cities) {
+                    $("#city").append(
+                        `<option value=${cities[c].CityID}>${cities[c].Name}</option>`
+                    );
+                }
+            });
+
+            function newUserError() {
+                alert("user not entered");
+            }
+
+            function DeleteUserError() {
+                alert("user note deleted");
+            }
+
+            function DeleteUserByID(userID) {
+                let reponse = window.confirm("Are you sure you want delete user");
+                if (reponse) {
+                    SecurityManager.DeleteUser(userID, addNewUserRow, DeleteUserError);
+                }
+                return;
+            }
+            // DeleteUserByID(1);
+
+
+            function addNewUserRow() {
+                $("#usersTabble").html("");
+                var allUsers = SecurityManager.GetAllUsers();
+                console.log(allUsers);
+                console.log(`array length${allUsers.length}`);
+                var newRowStr = "";
+                for (let i = 0; i < allUsers.length; i++) {
+                    // console.log(allUsers[i].name);
+                    newRowStr = `<tr><td>${allUsers[i].userID}</td><td>${allUsers[i].name}</td><td>${allUsers[i].email}</td>
+                        <td>Edit</td><td><button class="btn btn-danger" id="btn-${allUsers[i].userID}">Delete</button></td></tr>`;
+                    $("#usersTabble").append(newRowStr);
+                    // document.getElementById(`btn-${allUsers[i].userID}`).addEventListener("click", DeleteUserByID(allUsers[i].userID));
+                    document.getElementById(`btn-${allUsers[i].userID}`).addEventListener("click", () => {
+                        DeleteUserByID(allUsers[i].userID);
+                    });
+                }
+            }
+
+            addNewUserRow();
+            // userManangement Form submission done here\
+
+            $("#login,#password,#name,#email,#country,#city").focus(() => {
+                $(".newUserError").hide();
+            });
+            $("#newUser").click(() => {
+                // console.log(cities);
+                let login = $("#login").val();
+                let password = $("#password").val();
+                let name = $("#name").val();
+                let email = $("#email").val();
+                let country = $("#country").val();
+                let city = $("#city").val();
+                if (login.length == 0) {
+                    $(".loginError").show();
+                    $(".loginError").text("Login can't be empty");
+                    return;
+                }
+                if (password.length == 0) {
+                    $(".passwordError").show();
+                    $(".passwordError").text("password can't be empty");
+                    return;
+                }
+                if (name.length == 0) {
+                    $(".nameError").show();
+                    $(".nameError").text("name can't be empty");
+                    return;
+                }
+
+                if (email.length == 0) {
+                    $(".emailError").show();
+                    $(".emailError").text("Email can't be empty");
+                    return;
+                }
+                var emailPattern = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+                if (!(email.match(emailPattern))) {
+                    $(".emailError").show();
+                    $(".emailError").text("Enter valid email format");
+                    return;
+                }
+                if (country.length == 0) {
+                    $(".countryError").show();
+                    $(".countryError").text("country can't be empty");
+                    return;
+                }
+
+                if (city.length == 0) {
+                    $(".cityError").show();
+                    $(".cityError").text("city can't be empty");
+                    return;
+                }
+                var id = SecurityManager.GetAllUsers().length + 1;
+                console.log(id);
+                var u = {
+                    userID: id,
+                    login: login,
+                    password: password,
+                    name: name,
+                    email: email,
+                    CountryID: country,
+                    CityID: city,
+                };
+                console.log(u);
+
+                SecurityManager.SaveUser(u, addNewUserRow, newUserError);
+            });
+        });
+    </script>
+</body>
+
+</html>

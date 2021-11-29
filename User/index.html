@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin-Home</title>
+    <link rel="stylesheet" href="../css/AdminPage.css">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul class="navbar">
+          <li class="nav-items">
+            <a href="index.html" class="nav-links">Home</a>
+          </li>
+          <li class="nav-items">
+            <a href="../index.html" class="nav-links">Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+        <br>
+    <main id="adminHome">
+        <h1>Welcome <span id="userName"></span></h1>
+    </main>
+
+    <script src="../js/jquery-3.6.0.slim.min.js"></script>
+    <script src="../js/SecurityManager.js"></script>
+    <script>
+        $("document").ready(()=>{
+            let userData=document.cookie;
+            console.log(userData);
+            let s=userData.substring("userName".length+1, userData.length);
+            $("#userName").text(s);
+            // alert(name);
+        });
+    </script>
+  </body>
+</html>
